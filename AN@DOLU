@@ -1,0 +1,23 @@
+#!/bin/bash
+fl="/xxxxx/x.html"
+cd /xxxxx/
+wget -m --user=xxxxxx --password=xxxxx ftp://xxxx &>   /xxxxx/Anadolu_Download_status.txt
+status=`echo $?`
+cd /xxxxx//XXX
+ls -lhtr | awk '{print $9}' > downloadlist.txt
+ls -lhtr /var/www/html/xxxx/web//xxx/content/| awk '{print $9}' > contentlist.txt
+ls -lhtr /var/www/html/xxx/web//xxx/success/| awk '{print $9}' > successlist.txt
+ls -lhtr /var/www/html/xxx/web//xxx/failed/| awk '{print $9}' > failurelist.txt
+numfiles=0
+while read line
+do
+	content=`cat contentlist.txt | grep -i "$line" | wc -l`
+	success=`cat successlist.txt | grep -i "$line" | wc -l`
+	failure=`cat failurelist.txt | grep -i "$line" | wc -l`
+
+	if [ $success == 0 ] && [ $failure == 0 ] && [ $content == 0 ]; then
+		cp -vp $line /var/www/html/xxxx/web//xxx/content/
+		((numfiles+=1))
+	fi
+done < downloadlist.txt
+echo "$numfiles files copied"
